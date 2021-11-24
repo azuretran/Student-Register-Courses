@@ -1,0 +1,252 @@
+{% extends 'staff_gv_template/base_template.html' %}
+
+{% block page_title %}
+    Quản Lí Nhóm Thực Hành-Xếp  Thời KB
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <a class="btn btn-primary" href="{% url 'add_nhom_TH' %}" role="button">+ Thêm Nhóm</a> <br/>&nbsp;
+
+            {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Chi Tiết Các Nhóm</h3>
+
+                            <div class="card-tools">
+                            <div class="input-group input-group-sm" style="width: 150px;">
+
+                                <div class="input-group-append">
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0">
+                            <table id="sourcetable" class="  table-hover text-nowrap">
+                            <thead>
+                                <tr>
+                                    <th class="text-danger">STT</th>
+                                    <th>ID</th>
+                                <th> Thực Hành</th>
+                                <th>Ngày Bắt Đầu Học</th>
+                                <th>Ngày Kết Thúc Học</th>
+                                <th>Tên Nhóm</th>
+                                    <th>Buổi</th>
+                                    <th>Được Tạo Lúc</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for th in nhomth %}
+                                <tr>
+                                    <td></td>
+                                    <td>{{th.id}}</td>
+                                <td> Mã TH: {{ th.MATH.MATH }} |   Số Tiết: {{ th.MATH.soTietTH }} </td>
+                                <td>{{ th.startday_TH| date:'d-m-Y' }}</td>
+                                <td>{{ th.endday_TH| date:'d-m-Y' }}</td>
+                                    <td>{{ th.name_nhom }}</td>
+                                    {% if th.buoihoc == 5 %}
+                                    <td>Buổi Sáng</td>
+                                    {% else %}
+                                    <td>Buổi Chiều</td>
+                                    {% endif %}
+                                    <td>{{th.created_at| date:'d-m-Y'}}</td>
+                                <td>
+                                    <a href="{% url 'edit_nhomTH_study' th.id %}" class="btn btn-success pr-3"><i class="fas fa-edit"></i>Sửa</a>
+                                    <a href="{% url 'delete_nhomTH_study' th.id %}" class="btn btn-danger pr-3"><i class="far fa-trash-alt"></i>Xoá</a>
+
+                                </td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                            </table>
+                        </div>
+                        <input type="hidden" name="">
+                        <!-- /.card-body -->
+                        </div>
+                    <!-- /.card -->
+                <input type="hidden" id="th_id" name="th_id">
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+<div id="snackbar2" >
+   <i class="fas fa-clipboard-check"></i> Xuất Thời Khoá Biểu Thành Công
+</div>
+<div id="snackbar3" >
+   <i class="far fa-thumbs-up"></i> Đã Lập Thời Khoá Biểu
+</div>
+<style>
+#snackbar2 {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: red;
+  color: 	white;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+}
+
+#snackbar2.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+#snackbar3 {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: green;
+  color: 	white;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+}
+
+#snackbar3.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+</style>
+  {% endblock main_content %}
+{% block custom_js %}
+<script>
+            $(document).ready(function() {
+
+   $("#th_id").val(th_id);
+
+    var today = new Date();
+    $('#sourcetable  ').on( 'click','tbody tr', function () {
+            if ( t1.rows( '.selected' ).any() )
+                    {}
+            else
+           if ( t1.rows( '.selected' ) ) {
+
+
+            var th_id=$("#th_id").val();
+
+            /*$.ajax
+            ({
+                    url:'{% url "check_tkb_exist" %}',
+                    type:'POST',
+                    data:{ th_id:th_id},
+                })
+                .done(function(response)
+                {
+
+
+                    if(response=="True")
+                    {
+                    console.log(th_id);
+                 var x = document.getElementById("snackbar3");
+             x.className = "show";
+             setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+                    }
+
+
+                })
+
+                .fail(function(){
+
+                })
+*/
+            //check timetable exit
+$.ajax
+            ({
+                    url:'{% url "show_tkb_nhomTH_study" %}',
+                    type:'POST',
+                    data:{ th_id:th_id},
+                })
+                .done(function(response){
+
+                    if(response=="True")
+                    {
+
+                 var x = document.getElementById("snackbar2");
+             x.className = "show";
+             setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+                    }
+
+                })
+
+                .fail(function(){
+
+                })
+
+
+
+
+           }
+
+
+
+    } );
+
+    });
+</script>
+{% endblock custom_js %}

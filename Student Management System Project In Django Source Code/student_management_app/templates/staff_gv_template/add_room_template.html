@@ -1,0 +1,179 @@
+{% extends 'staff_gv_template/base_template.html' %}
+
+{% block page_title %}
+    <i class="fas fa-fan"></i> Thêm Phòng Học
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Thêm Phòng Học</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form role="form" method="POST" action="{% url 'add_room_save' %}">
+                        {% csrf_token %}
+
+
+                                {% comment %} Display Messages {% endcomment %}
+                                {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+
+
+                        <div class="card-body">
+                                <div class="form-group" >
+                                <label>Mã Phòng </label>
+                                <input id="id_room" type="text" class="  form-control" name="MAPHONG" placeholder="Nhập Mã Phòng">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Sĩ Số Phòng </label>
+                                <input type="number" class="form-control" name="Siso_phong" placeholder="Nhập Sĩ Số Phòng">
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>Mã Môn Học </label>
+                                <select id="MAMH" class="form-control" name="MAMH">
+                                    {% for sb in subject %}
+                                        <option value="{{ sb.id }}">Mã Môn Học:{{ sb.id }}| Tên Môn:  {{ sb.subject_name }}</option>
+                                    {% endfor %}
+
+                                </select>
+                            </div>
+                        <div class="form-group">
+                                <label>Mã Nhóm Thực Hành</label>
+                                <select class="form-control" name="MA_TH">
+                                          {% for sb in subject %}
+                                        {% for n in nhoms %}
+                                            {% if n.MATH.MATH == sb.MATH.MATH %}
+                                        <option value="{{ n.id }}">Môn:{{ sb.subject_name }}| Tên Nhóm:{{n.name_nhom}} </option>
+                                    {% endif %}
+                                     {% endfor %}
+                                     {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">Thêm Phòng Học</button>
+                            <input type="hidden" name="MAGVCAPPHONG" value="{{ staff.id  }}" />
+
+                        </div>
+                    </form>
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}
+{% block custom_js %}
+    {% comment %} Checking if room already exists or not using Ajax {% endcomment %}
+
+    <script>
+        $(document).ready(function(){
+            // keyup event will be triggered when user leaves keyboard
+            $("#id_room").keyup(function(){
+                var room = $(this).val();
+
+                if(room!=""){
+                    $.ajax({
+                        url : '{% url "check_room_exist" %}',
+                        type : 'POST',
+                        data : {room:room}
+                    })
+                    .done(function(response){
+                        //console.log(response);
+
+                        if(response == "True"){
+                            $(".room_error").remove();
+                            $("<span class='room_error' style='color: red; padding: 5px; font-weight: bold;'> Phòng đã tồn tại. </span>").insertAfter("#id_room")
+                        }
+                        else{
+                            $(".room_error").remove();
+                            $("<span class='room_error' style='color: green; padding: 5px; font-weight: bold;'> Phòng hợp lệ. </span>").insertAfter("#id_room")
+                        }
+                    })
+
+                    .fail(function(){
+                        console.log("Failed");
+                    })
+                }
+                else{
+                    $(".room_error").remove();
+                }
+
+            })
+            $("#MAMH").select(function(){
+                var room = $(this).val();
+
+                if(room!=""){
+                    $.ajax({
+                        url : '{% url "check_room_exist" %}',
+                        type : 'POST',
+                        data : {room:room}
+                    })
+                    .done(function(response){
+                        //console.log(response);
+
+                        if(response == "True"){
+                            $(".room_error").remove();
+                            $("<span class='room_error' style='color: red; padding: 5px; font-weight: bold;'> Phòng đã tồn tại. </span>").insertAfter("#id_room")
+                        }
+                        else{
+                            $(".room_error").remove();
+                            $("<span class='room_error' style='color: green; padding: 5px; font-weight: bold;'> Phòng hợp lệ. </span>").insertAfter("#id_room")
+                        }
+                    })
+
+                    .fail(function(){
+                        console.log("Failed");
+                    })
+                }
+                else{
+                    $(".room_error").remove();
+                }
+
+            })
+
+
+        })
+    </script>
+
+  {% endblock custom_js %}

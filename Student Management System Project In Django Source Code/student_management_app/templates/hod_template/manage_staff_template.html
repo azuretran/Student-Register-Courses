@@ -1,0 +1,125 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    Quản Lí Giảng Viên
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <a class="btn btn-primary" href="{% url 'add_staff' %}" role="button">+ Thêm Giảng Viên</a> <br/>&nbsp;
+
+            {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+
+            <div class="row">
+
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Chi Tiết Giảng Viên</h3>
+
+                            <div class="card-tools">
+                            <div class="input-group input-group-sm" style="width: 150px;">
+
+                                <div class="input-group-append">
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0">
+                            <table class="table display table-hover text-nowrap">
+                            <thead>
+                                <tr>
+                                    <th class="text-danger border-danger">STT</th>
+                                <th>Mã Giảng Viên</th>
+                                <th>Tên</th>
+                                <th>Họ</th>
+                                <th>Tài Khoản</th>
+                                <th>Email</th>
+                                <th>Địa Chỉ</th>
+                                <th>Gender</th>
+                                    <th>CMND</th>
+                                <th>Profile Pic</th>
+                                     <th>Ngày Sinh</th>
+                                     <th>Lương</th>
+                                <th>Last Login</th>
+                                <th>Date Joined</th>
+                                <th>Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                {% for staff in staff11 %}
+                                <tr>
+
+                                    <td></td>
+                                <td>{{ staff.admin.id }}</td>
+                                <td>{{ staff.admin.first_name }}</td>
+                                <td>{{ staff.admin.last_name }}</td>
+                                <td>{{ staff.admin.username }}</td>
+                                <td>{{ staff.admin.email }}</td>
+                                <td>{{ staff.address }}</td>
+                                <td>{{ staff.gender }}</td>
+                                    <td>{{ staff.cmnd }}</td>
+                                <td> <img src="{{ staff.profile_pic }}" style="width: 100px;" /> </td>
+                                <td>{{ staff.birthday|date:'d-m-Y' }}</td>
+                                    {% for i in staffs %}
+                                    {% if staff.id == i.id %}
+                                    <td>{{ i.salary}}</td>
+                                    {% endif %}
+                                    {% endfor %}
+                                <td>{{ staff.admin.last_login|date:'d-m-Y H:i' }}</td>
+                                <td>{{ staff.admin.date_joined|date:'d-m-Y H:i' }}</td>
+                                <td>
+                                    {% for i in staffs %}
+                                    {% if staff.id == i.id %}
+                                    <a href="{% url 'edit_staff' i.encrypt_key %}" class="btn btn-success">Sửa</a>
+                                    <a href="{% url 'delete_staff' i.encrypt_key %}" class="btn btn-danger">Xoá</a>
+                                    {% endif %}
+                                    {% endfor %}
+                                </td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}

@@ -1,0 +1,77 @@
+{% load static %}
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+      <!-- Brand Logo -->
+      <a href="{% url 'staff_home' %}" class="brand-link">
+     <img src="{% static 'dist/img/icon.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+            style="opacity: .8">
+        <span class="brand-text font-weight-light">HỌC VIỆN BƯU CHÍNH</span>
+      </a>
+
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+          <div class="image">
+              <img src="{{ user.staffs.profile_pic }}"  alt="Avatar" style="width:60px; border-radius: 50%;"/>
+
+          </div>
+          <div class="info pt-4">
+            <a href="{% url 'staff_profile' %}" class="d-block" style="font-size: large;font-weight: bold">{{ user.first_name }} {{ user.last_name }}</a>
+          </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <!-- Add icons to the links using the .nav-icon class
+                with font-awesome or any other icon font library -->
+            
+            <li class="nav-item">
+              {% url 'staff_home' as staff_home %}
+              <a href="{{ staff_home }}" class="nav-link {% if request.path == staff_home %} active {% endif %}">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>
+                  Trang Chủ
+                  {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
+                </p>
+              </a>
+            </li>
+
+          <li class="nav-item">
+              {% url 'manage_subject_teach' as manage_subject_teach %}
+              <a href="{{ manage_subject_teach }}" class="nav-link {% if request.path == manage_subject_teach %} active {% endif %}">
+            <i class="fas fa-university" style="color: green"></i>                <p>
+                 Xem Môn Dạy
+                  {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              {% url 'staff_gv_timetable' as staff_gv_timetable %}
+              <a href="{{ staff_gv_timetable }}" class="nav-link {% if request.path == staff_gv_timetable %} active {% endif %}">
+               <i class="far fa-calendar-alt" style="color: red"></i>
+                <p>
+                  Thời Khoá Biểu
+                  {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'staff_feedback' as staff_feedback %}
+              <a href="{{ staff_feedback }}" class="nav-link {% if request.path == staff_feedback %} active {% endif %}">
+                <i class="nav-icon fas fa-comments"></i>
+                <p>
+                  Phản Hồi
+                  {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
+                </p>
+              </a>
+            </li>
+
+          </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+      </div>
+      <!-- /.sidebar -->
+    </aside>

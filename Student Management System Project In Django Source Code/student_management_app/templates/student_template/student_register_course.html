@@ -1,0 +1,654 @@
+{% extends 'student_template/base_template.html' %}
+{% block page_title %}
+    Đăng Kí Môn Học
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                    <div class="card-header">
+                        <h5 class="card-title"style="font-size: large">Đăng Kí Học Phần</h5>
+
+                    </div>
+                    <!-- /.card-header -->
+
+                                {% comment %} Display Messages {% endcomment %}
+                                {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+                        <input type="hidden" id="start_day_register" value="{{time.start_day_register}}">
+                        <div id="dvOrders" class="pt-2">
+    <table id="sourcetable" class="display table-bordered " style="width:100%">
+        <thead class="table-info">
+            <tr>
+                <th class="table-danger text-white">STT</th>
+
+                <th >Mã Môn Học</th>
+                <th>Tên Môn Học </th>
+                <th>Nhóm TH</th>
+                <th>Số TC</th>
+                <th>Sĩ Số</th>
+                 <th>Còn Lại</th>
+                <th>Thứ</th>
+                <th>Buổi</th>
+                 <th>Phòng</th>
+                <th>Giá TC</th>
+                <th>Ngày Bắt Đầu</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for p in phongs %}
+            {% for s in price_subjects %}
+            {% for i  in nhoms %}
+             {% for k  in subjects %}
+            {% if i.id == p.MA_TH %}
+                {% if p.MAMH.id == s.MAMH.id %}
+            <tr>
+
+                <td ></td>
+                <td>{{ p.MAMH.id }}</td>
+                <td>{{ k.subject_name }}</td>
+                <td>{{p.MA_TH}}</td>
+                <td>{{p.MAMH.so_tc}}</td>
+                <td>{{p.MAMH.tongsvdk}}</td>
+                <td>{{p.MAMH.tongsvdk}}</td>
+                    <td>{{i.startday_TH| date:'l'}}</td>
+                <td>{{ i.buoihoc}}</td>
+                <td>{{p.MAPHONG}}</td>
+                <td>{{s.GiaTC}}</td>
+                <td>Từ {{i.startday_TH| date:'d-m-Y'}} - Đến  {{i.endday_TH| date:'d-m-Y'}}
+
+                </td>
+
+            </tr>
+        {% endif %}
+            {% endif %}
+        {% endfor %}
+             {% endfor %}
+            {% endfor %}
+  {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+                        <!-- /.card-body -->
+
+
+
+
+
+
+                    <!-- /.card -->
+                    <form method="post" action="">
+                           {% csrf_token %}
+                <div class="row">
+                        <div class="col-md-12">
+                         <div class="card card-success">
+                        <div class="card-header">
+                            <h3 class="card-title" style="font-size: large">Danh Sách Các Môn Đã Chọn</h3>
+                        </div>
+
+                        <div class="card-body pt-2">
+
+                                <table id="destinationtable" class="display table-bordered  " width="100%">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th>STT</th>
+
+                                         <th>Mã MH</th>
+                                        <th>Tên MH</th>
+                                         <th>Nhóm TH</th>
+                                        <th>Số TC</th>
+                                        <th>Học Phí</th>
+                                         <th>Trạng Thái Môn Học</th>
+                                        <th>DELETE</th>
+                                        <th>SAVE</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                    <tfoot>
+
+                                    </tfoot>
+                                </table>
+
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+            </div>
+                                        <input type="hidden" id="room_id" name="room_id" />
+                                            <input type="hidden" id="buoi_hoc" name="buoi_hoc" />
+                                            <input type="hidden" id="thu" name="thu" />
+                                            <input type="hidden" id="ma_mh" name="ma_mh" />
+                                            <input type="hidden" id="mamh_1" name="mamh_1" />
+                                            <input type="hidden" id="nhom_th" name="nhom_th" />
+                                            <input type="hidden" id="name_subject" name="name_subject" />
+
+                        <input type="hidden" id="sotc" name="sotc" />
+                        <input type="hidden" id="gia" name="gia" />
+
+                        <div class="card-footer">
+                        <button type="submit" class="btn btn-primary"><i class="far fa-save" style="color:yellow;"></i> Lưu Đăng Kí</button>
+                             <button type="submit" class="btn btn-danger"><i class="far fa-trash-alt"></i> Xoá</button>
+
+
+                        </div>
+                        </form>
+                </div>
+            </div>
+
+            </div>
+        </div><!-- /.container-fluid -->
+<div id="snackbar" >
+    <i class="far fa-check-circle"></i> Xoá Thành Công
+</div>
+<div id="snackbar1" >
+    <i class="far fa-check-circle"></i> Thêm Thành Công
+</div>
+    <div id="snackbar11" >
+    <i class="far fa-check-circle"></i> Thêm Thất Bại
+</div>
+    <div id="snackbar2" >
+   <i class="fas fa-radiation-alt"></i> Môn Học Đã Tồn Tại Trong Cơ Sở Dữ Liệu
+</div>
+    <div id="snackbar3" >
+   <i class="fas fa-radiation-alt"></i> Hiện không phải thời gian đăng kí môn học
+</div>
+      </section>
+<style>
+#snackbar {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: #00FA9A;
+  color: 	red;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+}
+
+#snackbar.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+#snackbar1 {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: red;
+  color: 	white;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+}
+
+#snackbar1.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+#snackbar11 {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: red;
+  color: 	white;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+}
+
+#snackbar11.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+#snackbar2 {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: red;
+  color: 	white;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+}
+
+#snackbar2.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+#snackbar3 {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: red;
+  color: 	white;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+}
+
+#snackbar3.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+</style>
+  {% endblock main_content %}
+{% block custom_js %}
+<script>
+    $(document).ready(function() {
+     var groupColumn = 2;
+
+  var t = $('#destinationtable').DataTable( {
+     "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Vietnamese.json"
+        },
+        "columnDefs": [ {
+            "searchable": false,
+            "orderable": false,
+            "targets": 0
+        } ,
+             {
+                "targets": [ 5 ],
+                "visible": true,
+                "searchable": true,
+                 render: $.fn.dataTable.render.number( ',', '.', 3, '','VND' )
+            },
+        ],
+        "order": [[ 1, 'asc' ]],
+            select: {
+            style:    'multi',
+            selector: 'td'
+        },
+     colReorder: true,
+
+     dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'collection',
+                text: 'Xuất Ra Dữ Liệu',
+                buttons: [
+                      'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+                dropup: true
+            }
+        ]
+    } );
+
+    t.on( 'order.dt search.dt', function () {
+        t.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+            cell.innerHTML = i+1;
+        } );
+    } ).draw();
+
+ $('#destinationtable tbody')
+        .on( 'mouseenter', 'td', function () {
+            var colIdx = table.cell(this).index().column;
+
+            $( table.cells().nodes() ).removeClass( 'highlight' );
+            $( table.column( colIdx ).nodes() ).addClass( 'highlight' );
+        } );
+
+
+ var t1 = $("#sourcetable").DataTable( {'initComplete': function(settings)
+   {
+
+ var api = this.api();
+
+         api.cells(
+            api.rows(function(idx, data, node){
+               return (data[3] === 3) ? true : false;
+            }).indexes(),
+            0
+         ).checkboxes.disable();
+      },
+    colReorder: true,
+     dom: 'Bfrtip',
+    "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Vietnamese.json"
+        },
+
+   columnDefs: [ {
+            orderable: false,
+            className: 'select-checkbox',
+
+      targets: groupColumn,
+       width: "5%", "targets": 0
+
+        } ,
+       {
+                "targets": [ 10 ],
+                "visible": false,
+                "searchable": false
+            },
+        ],
+   order: [[ groupColumn, 'asc' ]],
+        displayLength: 10,
+        drawCallback: function ( settings ) {
+            var api = this.api();
+            var rows = api.rows( {page:'current'} ).nodes();
+            var last=null;
+
+            api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
+                if ( last !== group ) {
+                    $(rows).eq( i ).before(
+                        '<tr class="group text-danger"><td  colspan="11">'+group+'</td></tr>'
+                    );
+
+                    last = group;
+                }
+            } );
+        },
+
+        select: {
+            style:    'multi',
+            selector: 'td'
+        },
+        order: [[ 1, 'asc' ]
+		],
+     buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ],
+
+    } );
+   t1.on( 'order.dt search.dt', function () {
+        t1.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+            cell.innerHTML = i+1;
+        } );
+    } ).draw();
+// Order by the grouping
+    $('#sourcetable tbody').on( 'click', 'tr.group', function () {
+        var currentOrder = t1.order()[0];
+        if ( currentOrder[0] === groupColumn && currentOrder[1] === 'asc' ) {
+            t1.order( [ groupColumn, 'desc' ] ).draw();
+        }
+        else {
+            t1.order( [ groupColumn, 'asc' ] ).draw();
+        }
+    } );
+
+   var counter = 1;
+           var btn_delete="<button type='button' id='buttondelete' class='remove btn btn-block btn-outline-primary'><i class=\"far fa-trash-alt\" style='--white: red;width: 20px'></i></button>";
+        var btn_save="<button type='button' id='buttonsave' class='add_re btn btn-block btn-outline-danger'><i class=\"far fa-save\" style='--white: red'></i></button>";
+function DoPrevent(e) {
+  e.preventDefault();
+  e.stopPropagation();
+}
+ var startDate = new Date(document.getElementById('start_day_register').value);
+
+
+    var today = new Date();
+    $('#sourcetable  ').on( 'click','tbody tr', function () {
+        if (startDate.getTime() < today.getTime() ) {
+
+            var x = document.getElementById("snackbar3");
+            x.className = "show";
+            setTimeout(function () {
+                x.className = x.className.replace("show", "");
+            }, 3000);
+            var rows = t1
+    .rows()
+    .remove()
+    .draw();
+        }
+ if ( t1.rows( '.selected' ).any() )
+ {}
+   else
+           if ( t1.rows( '.selected' ) ) {
+         var id = t1.cell(this, 1).data();
+          $("#mamh_1").val(id);
+          var ma_mh = t1.cell(this, 1).data();
+
+             var col3 = t1.cell(this, 2).data();
+             $("#nhom_th").val(col3);
+             var col4 = t1.cell(this, 3).data();
+              $("#name_subject").val(col4);
+             var col5 = t1.cell(this, 4).data();
+              $("#sotc").val(col5);
+             var col6=t1.cell(this, 10).data();
+              $("#gia").val(col6);
+             var buoi_hoc=t1.cell(this, 8).data();
+            var thu=t1.cell(this, 7).data();
+              var  room_id=t1.cell(this, 9).data();
+
+            $("#room_id").val(room_id);
+
+               $("#ma_mh").val(ma_mh);
+
+            var room_id=$("#room_id").val();
+
+        var ma_mh=$("#ma_mh").val();
+    $.ajax({
+                    url:'{% url "check_subject_register_exist" %}',
+                    type:'POST',
+                    data:{ room_id:room_id,ma_mh:ma_mh},
+                })
+                .done(function(response){
+
+                    if(response=="True")
+                    {
+
+                 var x = document.getElementById("snackbar2");
+             x.className = "show";
+             setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+              t1.row(':eq(0)', { page: 'current' }).deselect();
+                    }
+                    else
+                    {
+
+              t.row.add([
+               counter + '.5',
+               ma_mh,
+               col3,
+               col4,
+               col5,
+
+               col6*col5,
+               'Chưa Lưu Vào Cơ Sở Dữ Liệu',
+                  btn_delete,
+                     btn_save,
+             ]).draw(false);
+
+             counter++;
+                    }
+                })
+
+                .fail(function(){
+
+                })
+
+
+           }
+
+
+    } );
+
+
+
+
+
+        $('#destinationtable').on('click', 'tbody tr .add_re', function (e){
+
+    var room_id=$("#room_id").val();
+    var buoi_hoc=$("#buoi_hoc").val();
+    var thu=$("#thu").val();
+    var ma_mh=$("#ma_mh").val();
+    var gia=$("#gia").val();
+     var sotc=$("#sotc").val();
+     var mamh_1=$("#mamh_1").val();
+      var name_subject=$("#name_subject").val();
+      var nhom_th=$("#nhom_th").val();
+
+     $.ajax({
+                    url:'{% url 'student_register' %}',
+                    type:'POST',
+                    data:{room_id:room_id,ma_mh:ma_mh},
+                })
+                .done(function(response){
+
+                    if(response=="True")
+                    {
+                    console.log(room_id,ma_mh);
+                    console.log(response);
+                    }
+                    else
+                    {
+                    console.log(room_id,ma_mh);
+                    console.log(response);
+                    }
+
+
+
+                })
+
+                .fail(function(){
+                    alert("Lỗi!.")
+                })
+
+    //remove row present
+      var row = $(this).parents('tr');
+     if ($(row).hasClass('child')) {
+    	t.row($(row).prev('tr')).remove().draw();
+    }
+    else
+    {
+		t
+			.row($(this).parents('tr'))
+			.remove()
+		.draw();
+        }
+    //create new row
+ var counter = 1;
+    t.row.add([
+               counter + '.5',
+               mamh_1,
+               nhom_th,
+               name_subject,
+               sotc,
+
+               sotc*gia,
+               'Đã Lưu Vào Cơ Sở Dữ Liệu',
+                  btn_delete,
+                     btn_save,
+             ]).draw(false);
+
+             counter++;
+    var x = document.getElementById("snackbar1");
+  x.className = "show";
+  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+
+
+});
+
+    //delete a column in table click
+$('#destinationtable').on('click', '.remove', function () {
+
+
+    var row = $(this).parents('tr');
+var x = document.getElementById("snackbar");
+  x.className = "show";
+  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    if ($(row).hasClass('child')) {
+    	t.row($(row).prev('tr')).remove().draw();
+    }
+    else
+    {
+		t
+			.row($(this).parents('tr'))
+			.remove()
+		.draw();
+        }
+
+		});
+  $('table.display tbody')
+        .on( 'mouseenter', 'td', function () {
+            var colIdx = table.cell(this).index().column;
+
+            $( table.cells().nodes() ).removeClass( 'highlight' );
+            $( table.column( colIdx ).nodes() ).addClass( 'highlight' );
+        } );
+
+    });
+</script>
+{% endblock custom_js %}

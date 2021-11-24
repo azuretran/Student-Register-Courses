@@ -1,0 +1,23 @@
+{% extends 'staff_gv_template/base_template.html' %}
+
+{% block page_title %}
+    <i class="fas fa-hotel" style="color: red"></i> Quản Lí Phòng Học
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+            <h1>query: {{room1}}</h1>
+            <ul>
+                {% for pr in rooms %}
+             <p>{{ pr.MAPHONG }}</p>
+            {%endfor%}
+            </ul>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+  {% endblock main_content %}

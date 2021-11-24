@@ -1,0 +1,341 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    Thêm Giảng Viên
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+<style>
+    #password-strength label{
+margin-right:5px;
+}
+#password-strength input {
+padding:5px 7px;
+border:1px solid #d5d9da;
+box-shadow: 0 0 5px #e8e9eb inset;
+width:250px;
+font-size:1em;
+outline:0;
+margin-right:10px;
+}
+
+#password-strength{
+margin-left:5px;
+}
+
+#password-strength .short{
+color:#FF0000;
+}
+
+#password-strength .weak{
+color:#E66C2C;
+}
+
+#password-strength .good{
+color:#2D98F3;
+}
+
+#password-strength .strong{
+color:#006400;
+}
+</style>
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Thêm Giảng Viên</h3>
+                        <span id="strength_message"></span>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    {% url 'add_staff_save' as action_path %}
+                    {% include 'hod_template/form_template.html' with messages=messages form=form action_path=action_path button_text="+Thêm Nhân Viên"   %}
+                    <img id="thumbnail" alt=""/>
+                     <div id="password-strength-status"></div>
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+
+ <div id="snackbar2" >
+   <i class="fas fa-radiation-alt"></i> Tên không Được Kèm Kí Tự Số
+</div>
+<div id="snackbar3" >
+   <i class="fas fa-radiation-alt"></i> Họ không Được Kèm Kí Tự Số
+</div>
+<style>
+
+    #snackbar2 {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: red;
+  color: 	white;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+}
+
+#snackbar2.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+#snackbar3 {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: red;
+  color: 	white;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+}
+
+#snackbar3.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+</style>
+  {% endblock main_content %}
+
+  {% block custom_js %}
+    {% comment %} Checking if email and username already exists or not usin Ajax {% endcomment %}
+
+    <script>
+        $('#password, #confirm_password').on('keyup', function () {
+            if ($('#password').val() == $('#confirm_password').val()) {
+    $('#message').html('Matching').css('color', 'green');
+  } else
+    $('#message').html('Not Matching').css('color', 'red');
+});
+    function checkName(input) {
+
+        // Check if input contains a digit
+        if (/\d/.test(input.value)) {
+            var x = document.getElementById("snackbar2");
+            x.className = "show";
+            setTimeout(function () {
+                x.className = x.className.replace("show", "");
+            }, 3000);
+
+            $('#name').focus();
+            // Remove all digit characters
+            input.value = input.value.replace(/\d/gi, '');
+        }
+         return true;
+    }
+
+
+    function checkName1(input) {
+
+    // Check if input contains a digit
+    if (/\d/.test(input.value)) {
+        var x = document.getElementById("snackbar3");
+             x.className = "show";
+             setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+
+        $('#name1').focus();
+        // Remove all digit characters
+        input.value = input.value.replace(/\d/gi, '');
+    }
+    return true;
+
+    }
+
+
+
+
+
+    $(document).ready(function () {
+            $('#fileImage').change(function () {
+                ShowImageThumbnail(this);
+            });
+    })
+    function ShowImageThumbnail(fileInput) {
+        file=fileInput.files[0];
+        reader = new FileReader();
+        reader.onload= function (e) {
+            $('#thumbnail').attr('src',e.target.result).css('width','10%').insertAfter("#fileImage")
+
+        }
+        reader.readAsDataURL(file);
+    }
+
+        $(document).ready(function(){
+            $('#txtPassword').keyup(function () {
+            var password = $(this).val();
+
+        var strength = 0
+        if (password.length < 6) {
+             $(".email_error").remove();
+                            $("<span class='email_error' style='color: red; padding: 5px; font-weight: bold;'> Mật Khẩu Quá Ngắn. </span>").insertAfter("#txtPassword")
+
+        }
+        if (password.length > 7) strength += 1
+        // If password contains both lower and uppercase characters, increase strength value.
+        if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/)) strength += 1
+        // If it has numbers and characters, increase strength value.
+        if (password.match(/([a-zA-Z])/) && password.match(/([0-9])/)) strength += 1
+        // If it has one special character, increase strength value.
+        if (password.match(/([!,%,&,@,#,$,^,*,?,_,~])/)) strength += 1
+        // If it has two special characters, increase strength value.
+        if (password.match(/(.*[!,%,&,@,#,$,^,*,?,_,~].*[!,%,&,@,#,$,^,*,?,_,~])/)) strength += 1
+        // Calculated strength value, we can return messages
+        // If value is less than 2
+        if (strength < 2) {
+             $(".email_error").remove();
+                            $("<span class='email_error' style='color: red; padding: 5px; font-weight: bold;'> Mật Khẩu Quá Yếu. </span>").insertAfter("#txtPassword")
+
+        } else if (strength == 2) {
+            $(".email_error").remove();
+                            $("<span class='email_error' style='color: green; padding: 5px; font-weight: bold;'> Mật Khẩu Tốt. </span>").insertAfter("#txtPassword")
+
+        } else {
+             $(".email_error").remove();
+                            $("<span class='email_error' style='color: green; padding: 5px; font-weight: bold;'> Mật Khẩu Mạnh. </span>").insertAfter("#txtPassword")
+
+        }
+
+            })
+            // keyup event will be triggered when user leaves keyboard
+            $("#id_email").keyup(function(){
+                var email = $(this).val();
+
+                if(email!=""){
+                    $.ajax({
+                        url : '{% url 'check_email_exist' %}',
+                        type : 'POST',
+                        data : {email:email}
+                    })
+                    .done(function(response){
+                        //console.log(response);
+
+                        if(response == "True"){
+                            $(".email_error").remove();
+                            $("<span class='email_error' style='color: red; padding: 5px; font-weight: bold;'> Email Not Available. </span>").insertAfter("#id_email")
+                        }
+                        else{
+                            $(".email_error").remove();
+                            $("<span class='email_error' style='color: green; padding: 5px; font-weight: bold;'> Email Available. </span>").insertAfter("#id_email")
+                        }
+                    })
+
+                    .fail(function(){
+                        console.log("Failed");
+                    })
+                }
+                else{
+                    $(".email_error").remove();
+                }
+
+            })
+          function checkPasswordStrength() {
+            var number = /([0-9])/;
+            var alphabets = /([a-zA-Z])/;
+            var special_characters = /([~,!,@,#,$,%,^,&,*,-,_,+,=,?,>,<])/;
+            if ($('#password').val().length < 6) {
+                $('#password-strength-status').removeClass();
+                $('#password-strength-status').addClass('weak-password');
+                $('#password-strength-status').html("Weak (should be atleast 6 characters.)");
+            } else {
+                if ($('#password').val().match(number) && $('#password').val().match(alphabets) && $('#password').val().match(special_characters)) {
+                    $('#password-strength-status').removeClass();
+                    $('#password-strength-status').addClass('strong-password');
+                    $('#password-strength-status').html("Strong");
+                } else {
+                    $('#password-strength-status').removeClass();
+                    $('#password-strength-status').addClass('medium-password');
+                    $('#password-strength-status').html("Medium (should include alphabets, numbers and special characters.)");
+                }
+            }
+        }
+
+$('#password, #password1').on('keyup', function () {
+                $('#password').strength_meter();
+
+  if ($('#password').val() == $('#password1').val()) {
+      $(".email_error1").remove();
+                            $("<span class='email_error1' style='color: green; padding: 5px; font-weight: bold;'>  match. </span>").insertAfter("#password1")
+  } else{
+      $(".email_error1").remove();
+                            $("<span class='email_error1' style='color: red; padding: 5px; font-weight: bold;'> Not Match </span>").insertAfter("#password1")
+  }
+
+});
+            $("#id_username").keyup(function(){
+                var username = $(this).val();
+
+                if(username!=""){
+                    $.ajax({
+                        url : '{% url 'check_username_exist' %}',
+                        type : 'POST',
+                        data : {username:username}
+                    })
+                    .done(function(response){
+                        //console.log(response);
+
+                        if(response == "True"){
+                            $(".username_error").remove();
+                            $("<span class='username_error' style='color: red; padding: 5px; font-weight: bold;'> Username Not Available. </span>").insertAfter("#id_username")
+                        }
+                        else{
+                            $(".username_error").remove();
+                            $("<span class='username_error' style='color: green; padding: 5px; font-weight: bold;'> Username Available. </span>").insertAfter("#id_username")
+                        }
+                    })
+
+                    .fail(function(){
+                        console.log("Failed");
+                    })
+                }
+                else{
+                    $(".username_error").remove();
+                }
+                
+            })
+        })
+    </script>
+
+  {% endblock custom_js %}

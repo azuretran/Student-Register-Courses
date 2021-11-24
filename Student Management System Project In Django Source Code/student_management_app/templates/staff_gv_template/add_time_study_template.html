@@ -1,0 +1,233 @@
+{% extends 'staff_gv_template/base_template.html' %}
+
+{% block page_title %}
+    <i class="far fa-edit"></i> Thêm TG Học
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Thêm TG Học</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form role="form" method="POST" action="{% url 'add_time_study_save_gv' %}">
+                        {% csrf_token %}
+
+                        
+                                {% comment %} Display Messages {% endcomment %}
+                                {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+                            
+
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Ngày Bắt Đầu </label>
+                                <input  id="startday" type="date" class="form-control" name="start_day" onchange="checkDate()">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Ngày Kết Thúc </label>
+                                <input  id="endday" type="date" class="form-control" name="end_day" onchange="checkDate()" >
+                            </div>
+                            <div class="form-group">
+                                <label> Học Kì </label>
+                                <select  id="start_session" class="form-control" name="course" >
+                                    {% for course in session_years %}
+                                        <option value="{{ course.id }}">TG Bắt Đầu:{{ course.session_start_year| date:'d-m-Y' }}| Kết Thúc {{ course.session_end_year| date:'d-m-Y' }}  </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer">
+                        <button id="btn" type="submit" class="btn btn-primary"  >Thêm</button>
+                        </div>
+                    </form>
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+</div>
+    <div id="snackbar2" >
+   <i class="fas fa-radiation-alt"></i> Thời Gian Bắt Đầu > Thời Gian Kết Thúc
+</div>
+<div id="snackbar3" >
+   <i class="fas fa-radiation-alt"></i> Thời Gian Bắt Đầu > Hôm Nay
+</div>
+      <div id="snackbar4" >
+   <i class="fas fa-radiation-alt"></i> Thời Gian Bắt Đầu > TG Bắt Đầu Học Kì
+</div>
+<style>
+
+#snackbar2 {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: red;
+  color: 	white;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+}
+
+#snackbar2.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+#snackbar3 {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: red;
+  color: 	white;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+}
+
+#snackbar3.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+#snackbar4 {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: red;
+  color: 	white;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+}
+
+#snackbar4.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+</style>
+  {% endblock main_content %}
+{% block custom_js %}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js" type="text/javascript"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"
+type="text/javascript"></script>
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css"
+rel="Stylesheet"type="text/css"/>
+<script type="text/javascript">
+
+function checkDate() {
+    var startDate = new Date(document.getElementById('startday').value);
+    var endDate = new Date(document.getElementById('endday').value);
+    var start_session = new Date(document.getElementById('start_session').value);
+
+    var today = new Date();
+    if (start_session.getTime() > startDate.getTime() ) {
+
+         var x = document.getElementById("snackbar4");
+             x.className = "show";
+             setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+       btn.disabled = true; btn.innerText = 'Đang Gửi...'
+       setTimeout(function () {
+
+        location.reload(true);
+      }, 2000);
+
+    }
+    if (startDate.getTime() < today.getTime() ) {
+
+         var x = document.getElementById("snackbar3");
+             x.className = "show";
+             setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+       btn.disabled = true; btn.innerText = 'Đang Gửi...'
+       setTimeout(function () {
+
+        location.reload(true);
+      }, 2000);
+    $('#startDate').focus();
+    }
+    if (startDate.getTime() > endDate.getTime() ) {
+
+         var x = document.getElementById("snackbar2");
+             x.className = "show";
+             setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+       btn.disabled = true; btn.innerText = 'Đang Gửi...'
+       setTimeout(function () {
+
+        location.reload(true);
+      }, 2000);
+
+    }
+}
+</script>
+{% endblock custom_js %}

@@ -1,0 +1,342 @@
+{% extends 'staff_gv_template/base_template.html' %}
+
+{% block page_title %}
+    <i class="far fa-edit"></i> Sửa Nhóm Thực Hành
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Sửa</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form role="form" method="POST" action="{% url 'edit_nhomTH_save' %}">
+                        {% csrf_token %}
+
+
+                                {% comment %} Display Messages {% endcomment %}
+                                {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+
+
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Mã Thực Hành </label>
+                                  <input type="hidden" name="MATH" value="{{ tghoc.id }}" />
+                                 <select id="math" class="form-control" name="course">
+                                    {% for tg in tghoc1 %}
+                                        <option value="{{ tg.MATH }}">Mã Thực Hành : {{tg.MATH}} |  Số Tiết TH : {{tg.soTietTH}} </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Ngày Bắt Đầu </label>
+                                <input id="startDate" type="date" class="form-control" name="startday_TH" value="{{ tghoc.startday_TH| date:'Y-m-d' }}" onchange="checkDate()">
+                            </div>
+                             <div class="form-group">
+                                <label>Ngày Kết Thúc </label>
+                                <input  id="endDate" type="date" class="form-control" name="endday_TH"  value="{{ tghoc.endday_TH | date:'Y-m-d'}}" onchange="checkDate()">
+                            </div>
+                            <div class="form-group">
+                                <label>Tên nhóm </label>
+                                <input id="name_nhom" class="form-control" name="name_nhom" value="{{tghoc.name_nhom}}">
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+
+                        <button type="submit" class="btn btn-primary">Cập Nhật</button>
+                        </div>
+                    </form>
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+ <div id="snackbar2" >
+   <i class="fas fa-radiation-alt"></i> Thời Gian Bắt Đầu > Thời Gian Kết Thúc
+</div>
+<div id="snackbar4" >
+   <i class="fas fa-radiation-alt"></i> Thời Gian Bắt Đầu < Thời Gian Bắt Đầu Học Kì
+</div>
+<div id="snackbar3" >
+   <i class="fas fa-radiation-alt"></i> Thời Gian Bắt Đầu > Hôm Nay
+</div>
+<div id="snackbar5" >
+   <i class="fas fa-radiation-alt"></i> Nhóm >0
+</div>
+<style>
+
+#snackbar2 {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: red;
+  color: 	white;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+}
+
+#snackbar2.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+#snackbar5 {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: red;
+  color: 	white;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+}
+
+#snackbar5.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+#snackbar4 {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: red;
+  color: 	white;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+}
+
+#snackbar4.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+#snackbar3 {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: red;
+  color: 	white;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+}
+
+#snackbar3.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+</style>
+  {% endblock main_content %}
+{% block custom_js %}
+ <script>
+            var mahocki = $('#mahocki').val();
+              var math = $('#math').val();
+               console.log(mahocki,math);
+        $("#nhom_name").keyup(function() {
+
+              var nhom_name = $(this).val();
+
+                if(nhom_name!=""){
+                    $.ajax({
+                        url : '{% url "check_nhom_name_exist" %}',
+                        type : 'POST',
+                        data : {math:math,mahocki:mahocki,nhom_name:nhom_name}
+                    })
+                    .done(function(response){
+
+
+                        if(response == "True"){
+                            $(".room_error").remove();
+                            $("<span class='room_error' style='color: red; padding: 5px; font-weight: bold;'> Nhóm đã tồn tại. </span>").insertAfter("#nhom_name")
+                        }
+                        else{
+                            $(".room_error").remove();
+                            $("<span class='room_error' style='color: green; padding: 5px; font-weight: bold;'> Nhóm hợp lệ. </span>").insertAfter("#nhom_name")
+                        }
+                    })
+
+                    .fail(function(){
+                        console.log("Failed");
+                    })
+                }
+                else{
+                    $(".room_error").remove();
+                }
+
+
+
+ });
+
+
+
+
+
+     function checkDate() {
+    var startDate = new Date(document.getElementById('startDate').value);
+    var endDate = new Date(document.getElementById('endDate').value);
+    var today = new Date();
+
+    if (startDate.getTime() < today.getTime() ) {
+
+         var x = document.getElementById("snackbar3");
+             x.className = "show";
+             setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+       btn.disabled = true; btn.innerText = 'Đang Gửi...'
+       setTimeout(function () {
+
+        location.reload(true);
+      }, 2000);
+
+    }
+    if (startDate.getTime() > endDate.getTime() ) {
+
+         var x = document.getElementById("snackbar2");
+             x.className = "show";
+             setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+       btn.disabled = true; btn.innerText = 'Đang Gửi...'
+       setTimeout(function () {
+
+        location.reload(true);
+      }, 2000);
+
+    }
+}
+        $(document).ready(function(){
+             $("#math").select(function() {
+                  var x = $(this).val();
+                   $("#math").val(x);
+              })
+            // keyup event will be triggered when user leaves keyboard
+            $("#nhom_name").keyup(function(){
+                 var math=$("#math").val();
+                var nhom_name = $(this).val();
+
+                if(nhom_name!=""){
+                    $.ajax({
+                        url : '{% url "check_thuchanh_exist" %}',
+                        type : 'POST',
+                        data : {nhom_name:nhom_name,math:math}
+                    })
+                    .done(function(response){
+                        console.log(response);
+
+                        if(response == "True"){
+                            $(".room_error").remove();
+                            $("<span class='room_error' style='color: red; padding: 5px; font-weight: bold;'> Nhóm Đã Tồn Tại . </span>").insertAfter("#id_room")
+                        }
+                        else{
+                            $(".room_error").remove();
+                            $("<span class='room_error' style='color: green; padding: 5px; font-weight: bold;'> Nhóm Hợp Lệ </span>").insertAfter("#id_room")
+                        }
+                    })
+
+                    .fail(function(){
+                        console.log("Failed");
+                    })
+                }
+                else{
+                    $(".room_error").remove();
+                }
+
+            })
+             $("#th_number").keyup(function() {
+                 var math = $(this).val();
+                 if (math <=0 ) {
+                     $(".room_error").remove();
+                     $("<span class='room_error' style='color: red; padding: 5px; font-weight: bold;'> Số Tiết >0. </span>").insertAfter("#th_number")
+                 } else {
+                     $(".room_error").remove();
+                     $("<span class='room_error' style='color: green; padding: 5px; font-weight: bold;'> Thoả Mãn. </span>").insertAfter("#th_number")
+                 }
+
+
+
+                 })
+
+
+
+        })
+    </script>
+{% endblock custom_js %}

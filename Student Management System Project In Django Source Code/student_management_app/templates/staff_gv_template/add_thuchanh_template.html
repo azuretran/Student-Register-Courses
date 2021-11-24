@@ -1,0 +1,241 @@
+{% extends 'staff_gv_template/base_template.html' %}
+
+{% block page_title %}
+    <i class="far fa-edit"></i> Thêm Tiết Thực Hành
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Thêm Thực Hành</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form role="form" method="POST" action="{% url 'add_thuchanh_gv_save' %}">
+                        {% csrf_token %}
+
+                        
+                                {% comment %} Display Messages {% endcomment %}
+                                {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+                            
+
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Mã Thực Hành Của Môn Học</label>
+                                <input id="id_room" type="text" class="form-control" name="MATH">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Số Tiết Thực Hành </label>
+                                <input id="th_number" type="number" class="form-control" name="soTietTH">
+                            </div>
+
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                        <button id="btn" type="submit" class="btn btn-primary" >+ Thêm </button>
+                        </div>
+                    </form>
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+<div id="snackbar3" >
+   <i class="fas fa-radiation-alt"></i> Số Tiết >0
+</div>
+
+<style>
+
+
+#snackbar3 {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: red;
+  color: 	white;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+}
+
+#snackbar3.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+</style>
+  {% endblock main_content %}
+{% block custom_js %}
+    {% comment %} Checking if room already exists or not using Ajax {% endcomment %}
+
+    <script>
+           var str = $("#th_number"). val();
+           console.log(str);
+        function checkDate() {
+
+                 if (str <=0 ) {
+                     btn.disabled = true;
+                     btn.innerText = 'Đang Gửi...'
+                     setTimeout(function () {
+
+                         location.reload(true);
+                     }, 2000);
+                 }
+        }
+        $(document).ready(function(){
+            // keyup event will be triggered when user leaves keyboard
+            $("#id_room").keyup(function(){
+                var math = $(this).val();
+
+                if(math!=""){
+                    $.ajax({
+                        url : '{% url "check_thuchanh_exist" %}',
+                        type : 'POST',
+                        data : {math:math}
+                    })
+                    .done(function(response){
+                        //console.log(response);
+
+                        if(response == "True"){
+                            $(".room_error").remove();
+                            $("<span class='room_error' style='color: red; padding: 5px; font-weight: bold;'> Mã Thực Hành Đã Tồn Tại. </span>").insertAfter("#id_room")
+                        }
+                        else{
+                            $(".room_error").remove();
+                            $("<span class='room_error' style='color: green; padding: 5px; font-weight: bold;'> Mã Hợp Lệ. </span>").insertAfter("#id_room")
+                        }
+                    })
+
+                    .fail(function(){
+                        console.log("Failed");
+                    })
+                }
+                else{
+                    $(".room_error").remove();
+                }
+
+            })
+             $("#th_number").keyup(function() {
+                 var math = $(this).val();
+                 if (math <=0 ) {
+                     $(".room_error").remove();
+                     $("<span class='room_error' style='color: red; padding: 5px; font-weight: bold;'> Số Tiết >0. </span>").insertAfter("#th_number")
+                     var x = document.getElementById("snackbar3");
+                     x.className = "show";
+                     setTimeout(function () {
+                         x.className = x.className.replace("show", "");
+                     }, 3000);
+
+                     btn.disabled = true;
+                     btn.innerText = 'Đang Gửi...'
+                     setTimeout(function () {
+
+                         location.reload(true);
+                     }, 2000);
+                 }
+                  else {
+                     $(".room_error").remove();
+                     $("<span class='room_error' style='color: green; padding: 5px; font-weight: bold;'> Thoả Mãn. </span>").insertAfter("#th_number")
+                 }
+
+
+
+                 })
+            $("#MAMH").select(function(){
+                var room = $(this).val();
+
+                if(room!=""){
+                    $.ajax({
+                        url : '{% url "check_room_exist" %}',
+                        type : 'POST',
+                        data : {room:room}
+                    })
+                    .done(function(response){
+                        //console.log(response);
+
+                        if(response == "True"){
+                            $(".room_error").remove();
+                            $("<span class='room_error' style='color: red; padding: 5px; font-weight: bold;'> Phòng đã tồn tại. </span>").insertAfter("#id_room")
+                        }
+                        else{
+                            $(".room_error").remove();
+                            $("<span class='room_error' style='color: green; padding: 5px; font-weight: bold;'> Phòng hợp lệ. </span>").insertAfter("#id_room")
+                        }
+                    })
+
+                    .fail(function(){
+                        console.log("Failed");
+                    })
+                }
+                else{
+                    $(".room_error").remove();
+                }
+
+            })
+
+
+        })
+    </script>
+
+  {% endblock custom_js %}

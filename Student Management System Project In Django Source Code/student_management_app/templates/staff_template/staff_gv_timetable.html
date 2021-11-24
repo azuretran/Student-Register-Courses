@@ -1,0 +1,281 @@
+{% extends 'staff_template/base_template.html' %}
+
+{% block page_title %}
+    Thời Khoá Biểu Giảng Viên
+{% endblock page_title %}
+
+{% block main_content %}
+ {% block custom_css %}
+<style>
+
+</style>
+    {% endblock custom_css %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Xem Thời Khoá Biểu</h3>
+
+                    </div>
+                    <!-- /.card-header -->
+
+                                {% comment %} Display Messages {% endcomment %}
+                                {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+                 <div class="card-body">
+                     <div class="row">
+                         <div class="col-lg-2">
+                             <i class="fas fa-filter" style="color: red;margin-right: auto"></i>
+                             <label> Lọc Theo Thời Gian</label>
+                         </div>
+                         <div class="col-6">
+                             <label>
+                    Ngày Bắt Đầu
+            <input type="date" placeholder="Date : From" id="start_date">
+            </label>
+                <label>
+             Ngày Kết Thúc
+            <input type="date" placeholder="Date : To" id="end_date">
+             </label>
+
+                     </div>
+                 </div>
+                   <div id="calendar">
+
+
+                   </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                            <div class="container-fluid">
+                                <button type="submit" class="btn btn-primary ml-5">Xuất Ecxel</button>
+
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                    <!-- /.card -->
+
+
+
+                </div>
+            </div>
+
+
+
+        </div><!-- /.container-fluid -->
+      </section>
+<style>
+    .fc-event {
+	background: yellow !important;
+	color: #000 !important;
+	}
+    .fc .fc-button {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+    background-color: #20B2AA;
+    border: 1px solid #FF6347;
+    padding: 0.4em 0.65em;
+    font-size: 1em;
+    line-height: 1.5;
+    border-radius: 0.25em;
+
+  }
+
+</style>
+  {% endblock main_content %}
+
+{% block custom_js %}
+<script>
+
+    var date = new Date();
+		var d = date.getDate();
+		var m = date.getMonth();
+		var y = date.getFullYear();
+
+		/*  className colors
+
+		className: default(transparent), important(red), chill(pink), success(green), info(blue)
+
+		*/
+
+
+		/* initialize the external events
+		-----------------------------------------------------------------*/
+
+		$('#external-events div.external-event').each(function() {
+
+			// create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
+			// it doesn't need to have a start or end
+			var eventObject = {
+				title: $.trim($(this).text()) // use the element's text as the event title
+			};
+
+			// store the Event Object in the DOM element so we can get to it later
+			$(this).data('eventObject', eventObject);
+
+			// make the event draggable using jQuery UI
+			$(this).draggable({
+				zIndex: 999,
+				revert: true,      // will cause the event to go back to its
+				revertDuration: 0  //  original position after the drag
+			});
+
+		});
+
+
+		/* initialize the calendar
+		-----------------------------------------------------------------*/
+
+		var calendar =  $('#calendar').fullCalendar({
+			header: {
+				left: 'title',
+				center: 'agendaDay,agendaWeek,month',
+				right: 'prev,next today'
+			},
+            themeSystem: 'bootstrap',
+    close: 'fa-times',
+            prev: 'fa-chevron-left',
+  next: 'fa-chevron-right',
+  prevYear: 'fa-angle-double-left',
+  nextYear: 'fa-angle-double-right',
+			editable: false,
+			firstDay: 1, //  1(Monday) this can be changed to 0(Sunday) for the USA system
+			selectable: false,
+			defaultView: 'month',
+
+			axisFormat: 'h:mm',
+			columnFormat: {
+                month: 'ddd',    // Mon
+                week: 'ddd d', // Mon 7
+                day: 'dddd M/d',  // Monday 9/7
+                agendaDay: 'dddd d'
+            },
+            titleFormat: {
+                month: 'MMMM yyyy', // September 2009
+                week: "MMMM yyyy", // September 2009
+                day: 'MMMM yyyy'                  // Tuesday, Sep 8, 2009
+            },
+			allDaySlot: false,
+			selectHelper: true,
+			select: function(start, end, allDay) {
+				var title = prompt('Event Title:');
+				if (title) {
+					calendar.fullCalendar('renderEvent',
+						{
+							title: title,
+							start: start,
+							end: end,
+							allDay: allDay
+						},
+						true // make the event "stick"
+					);
+				}
+				calendar.fullCalendar('unselect');
+			},
+			droppable: true, // this allows things to be dropped onto the calendar !!!
+			drop: function(date, allDay) { // this function is called when something is dropped
+
+				// retrieve the dropped element's stored Event Object
+				var originalEventObject = $(this).data('eventObject');
+
+				// we need to copy it, so that multiple events don't have a reference to the same object
+				var copiedEventObject = $.extend({}, originalEventObject);
+
+				// assign it the date that was reported
+				copiedEventObject.start = date;
+				copiedEventObject.allDay = allDay;
+
+				// render the event on the calendar
+				// the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+				$('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
+
+				// is the "remove after drop" checkbox checked?
+				if ($('#drop-remove').is(':checked')) {
+					// if so, remove the element from the "Draggable Events" list
+					$(this).remove();
+				}
+
+			},
+            events: [
+            {% for k in subject %}
+              {% for j in phongs %}
+                 {% for i in tkb %}
+                            {% if j.MAMH.id == k.id%}
+                                {% if i.Nhom_TH.MATH.MATH == k.MATH.MATH   %}
+            {
+
+                title: "{{ k.subject_name}} phòng {{j.MAPHONG}} Buổi {{ i.Nhom_TH.buoihoc}} ",
+               start: '{{ i.startday_TH|date:"Y-m-d" }}',
+              end: '{{ i.endday_TH|date:"Y-m-d" }}',
+                allDay: false,
+
+
+            },
+     {% endif %}
+  {% endif %}
+            {% endfor %}
+         {% endfor %}
+     {% endfor %}
+        ]
+
+
+
+
+		});
+// filter
+    $('#start_date').on('change', function(){
+    	$('#calendar').fullCalendar('option', 'validRange', {
+      	// Don't worry if user didn't provide *any* inputs.
+        start: this.value,
+        end: $('#end_date').val()
+      });
+    });
+
+    $('#end_date').on('change', function(){
+    	$('#calendar').fullCalendar('option', 'validRange', {
+      	// Don't worry if user didn't provide *any* inputs.
+        start: $('#start_date').val(),
+        end: this.value
+      });
+    });
+</script>
+
+
+{% endblock custom_js %}
