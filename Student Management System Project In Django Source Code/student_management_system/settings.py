@@ -2,6 +2,7 @@
 import os
 import dj_database_url
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import django_heroku
 from django.conf.global_settings import DATABASES
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +21,7 @@ ALLOWED_HOSTS = []
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1','sampledomain.com']
+#ALLOWED_HOSTS = ['127.0.0.1','sampledomain.com']
 # Application definition
 
 INSTALLED_APPS = [
@@ -67,7 +68,7 @@ TEMPLATES = [
         },
     },
 ]
-
+django_heroku.settings(locals())
 WSGI_APPLICATION = 'student_management_system.wsgi.application'
 
 prod_db  =  dj_database_url.config(conn_max_age=500)
