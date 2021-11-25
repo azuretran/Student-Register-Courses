@@ -68,7 +68,7 @@ TEMPLATES = [
         },
     },
 ]
-django_heroku.settings(locals())
+django_heroku.settings(locals(), staticfiles=False, allowed_hosts=False)
 WSGI_APPLICATION = 'student_management_system.wsgi.application'
 
 prod_db  =  dj_database_url.config(conn_max_age=500)
