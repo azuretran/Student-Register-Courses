@@ -15,11 +15,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '(i#*06f#keydy_fh17bf=$0f6v)^wr^l7*u4gq42m*sztu#2_m'
 ENCRYPT_KEY= b'bNDfv8Qvr1_Ku0avVaxeatCzDES77QdLXNZ9mEd7P_s='
 # SECURITY WARNING: don't run with debug turned on in production!
+
+
+
 DEBUG = True
-
-ALLOWED_HOSTS = []
-
-DEBUG = False
 
 #ALLOWED_HOSTS = ['127.0.0.1','sampledomain.com']
 # Application definition
@@ -68,24 +67,20 @@ TEMPLATES = [
         },
     },
 ]
-django_heroku.settings(locals(), staticfiles=False, allowed_hosts=False)
-WSGI_APPLICATION = 'student_management_system.wsgi.application'
 
-prod_db  =  dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(prod_db)
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-#DATABASES = {
-#     'default': {
-#        'ENGINE': 'django.db.backends.mysql',
-#        'NAME': 'sv7',
-#        'USER': 'root',
-#        'PASSWORD': '123456',
-#        'HOST': 'localhost',
-#       'PORT': '3309',
-#    }
-#}
+DATABASES = {
+     'default': {
+       'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'sv7',
+        'USER': 'root',
+        'PASSWORD': '123456',
+        'HOST': 'localhost',
+       'PORT': '3309',
+    }
+}
 
 
 # Password validation
